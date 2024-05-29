@@ -1,5 +1,7 @@
 package mapreduce
 
+// start worker 
+
 import (
 	"fmt"
 	"log"

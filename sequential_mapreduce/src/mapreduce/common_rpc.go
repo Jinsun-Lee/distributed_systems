@@ -1,5 +1,7 @@
 package mapreduce
 
+// task rpc msg
+
 import (
 	"fmt"
 	"net/rpc"
