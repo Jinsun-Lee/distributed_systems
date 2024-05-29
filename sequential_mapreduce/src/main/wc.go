@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"mapreduce"
+	"sequential_mapreduce/src/mapreduce"
 	"os"
  
-  "strconv"
+    "strconv"
 	"strings"
 	"unicode"
 )
