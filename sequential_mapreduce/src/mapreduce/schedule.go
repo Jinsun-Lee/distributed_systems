@@ -2,6 +2,7 @@ package mapreduce
 
 import (
 	"fmt"
+	"sync"
 )
 
 // schedule starts and waits for all tasks in the given phase (Map or Reduce).
@@ -30,29 +31,42 @@ func (mr *Master) schedule(phase jobPhase) {
 	// each task have DoTaskArgs(TaskNumber, File)
     // call worker.DoTask()
 
-	for i := 0; i < ntasks; i++ {
-        worker := <-mr.registerChannel
-        args := DoTaskArgs{
-            JobName:       mr.jobName,
-            Phase:         phase,
-            TaskNumber:    i,
-            NumOtherPhase: nios,
-            File:          mr.files[i],
-        }
-        go func(worker string, args DoTaskArgs) {
-            ok := call(worker, "Worker.DoTask", &args, new(struct{}))
-            if !ok {
-                fmt.Printf("Schedule: RPC %s DoTask error\n", worker)
-                go func() {
-                    mr.registerChannel <- worker
-                }()
-            }
-        }(worker, args)
-    }
+
+	// Use a WaitGroup to wait for all tasks to complete
+	var wg sync.WaitGroup
+	wg.Add(ntasks)
 
     for i := 0; i < ntasks; i++ {
-        <-mr.registerChannel 
+        wg.Add(1)
+        go func(taskNumber int) {
+            defer wg.Done()
+
+            worker := <-mr.registerChannel
+            
+			args := DoTaskArgs{
+                JobName:       mr.jobName,
+                Phase:         phase,
+                TaskNumber:    taskNumber,
+                NumOtherPhase: nios,
+                File:          mr.files[taskNumber],
+            }
+            
+			ok := call(worker, "Worker.DoTask", &args, new(struct{}))
+            if !ok {
+                fmt.Printf("Schedule: RPC %s DoTask error\n", worker)
+            }
+            
+			// task fin > add worker to channel
+            go func() {
+                mr.registerChannel <- worker
+            }()
+
+        }(i)
     }
+
+    // wait all task done
+    wg.Wait()
+
 
 	// END
 	debug("Schedule: %v phase done\n", phase)
