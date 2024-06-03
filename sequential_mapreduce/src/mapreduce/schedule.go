@@ -71,13 +71,13 @@ func (mr *Master) schedule(phase jobPhase) {
 		wg.Add(1)                                  
         
 		go func() {
-            defer wg.Done()                        // 각 고루틴이 작업 완료 후 WaitGroup에 알림
+			defer wg.Done()                        // 각 고루틴이 작업 완료 후 WaitGroup에 알림
 
-            for taskNumber := range taskChannel {  // 각 고루틴은 taskChannel에서 작업을 가져옴(작업번호를 가져와 작업 수행)
-                worker := <-mr.registerChannel     // 워커를 가져와 작업을 할당
+			for taskNumber := range taskChannel {  // 각 고루틴은 taskChannel에서 작업을 가져옴(작업번호를 가져와 작업 수행)
+				worker := <-mr.registerChannel     // 워커를 가져와 작업을 할당
 
                 args := DoTaskArgs{
-                    JobName:       mr.jobName,
+                	JobName:       mr.jobName,
                     Phase:         phase,
                     TaskNumber:    taskNumber,
                     NumOtherPhase: nios,
@@ -93,7 +93,7 @@ func (mr *Master) schedule(phase jobPhase) {
                 }
 
                 go func() {
-                    mr.registerChannel <- worker // 작업이 완료되면 워커를 registerChannel로 반환
+                	mr.registerChannel <- worker // 작업이 완료되면 워커를 registerChannel로 반환
                 }()
             }
         }()
