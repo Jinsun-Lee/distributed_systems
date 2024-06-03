@@ -56,7 +56,6 @@ func (mr *Master) schedule(phase jobPhase) {
 	}
 	close(taskChannel)                    // 모든 작업 번호를 채널에 보낸 후 채널을 닫음
 
-	// registerChannel는 사용 가능한 워커들을 담고 있는 채널, 하나의 워커를 받아옴
 	for i := 0; i < ntasks; i++ {         // ntasks만큼의 고루틴을 생성
         
 		/*
@@ -69,11 +68,15 @@ func (mr *Master) schedule(phase jobPhase) {
 		*/
 		
 		wg.Add(1)                                  
-        
+
+		// 고루틴이 생성됨 
 		go func() {
 			defer wg.Done()                        // 각 고루틴이 작업 완료 후 WaitGroup에 알림
 
+			// taskChannel에서 작업 번호를 가져와 작업을 처리
 			for taskNumber := range taskChannel {  // 각 고루틴은 taskChannel에서 작업을 가져옴(작업번호를 가져와 작업 수행)
+
+				// registerChannel는 사용 가능한 워커들을 담고 있는 채널, 하나의 워커를 받아옴
 				worker := <-mr.registerChannel     // 워커를 가져와 작업을 할당
 
                 args := DoTaskArgs{
