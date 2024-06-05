@@ -2,30 +2,16 @@ package main
 
 import (
 	"fmt"
-	//"sequential_mapreduce/src/mapreduce"
 	"mapreduce"
 	"os"
  
     "strconv"
 	"strings"
 	"unicode"
-
-	//"time"
 )
-
 
 func mapF(document string, value string) (res []mapreduce.KeyValue) {
 	// TODO: you have to write this function
- 
-	/*
-	words := strings.FieldsFunc(value, func(c rune) bool {
-		return !unicode.IsLetter(c)
-	})
-	for _, word := range words {
-		res = append(res, mapreduce.KeyValue{Key: word, Value: "1"})
-	}
-	return res
-	*/
 
 	results := strings.FieldsFunc(value, func(ch rune) bool{return !unicode.IsLetter(ch)})
 	for _,v := range results{
@@ -36,17 +22,6 @@ func mapF(document string, value string) (res []mapreduce.KeyValue) {
 
 func reduceF(key string, values []string) string {
 	// TODO: you also have to write this function
-
-	/*
-	count := 0
-	for _, value := range values {
-		c, err := strconv.Atoi(value)
-		if err == nil {
-			count += c
-		}
-	}
-	return strconv.Itoa(count)
-	*/
 
 	var res int
 	res = len(values) 
@@ -59,8 +34,6 @@ func reduceF(key string, values []string) string {
 // 3) Worker (e.g., go run wc.go worker localhost:7777 localhost:7778 &)
 func main() {
 	
-	//start := time.Now()
-
 	if len(os.Args) < 4 {
 		fmt.Printf("%s: see usage comments in file\n", os.Args[0])
 	} else if os.Args[1] == "master" {
@@ -75,7 +48,4 @@ func main() {
 		mapreduce.RunWorker(os.Args[2], os.Args[3], mapF, reduceF, 100)
 	}
 
-	//end := time.Now()
-	//elapsed := end.Sub(start)
-	//fmt.Printf("Execution time: %s\n", elapsed)
 }

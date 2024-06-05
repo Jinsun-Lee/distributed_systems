@@ -1,3 +1,7 @@
+> [!NOTE]  
+> Distributed Systems (COS-418)
+  
+    
 ### Part 1: Map/Reduce input and output
 
 ```
@@ -97,7 +101,7 @@ go test -count=1 -run TestBasic -timeout 150s mapreduce/...
 ## Part 4: Handling worker failures
 
 ```
-# 지에서 실행
+# swji에서 실행
 ulimit -n 16384
 go test -run Failure mapreduce/...
 ```
@@ -182,7 +186,23 @@ https://github.com/Jinsun-Lee/distributed_systems/blob/master/sequential_mapredu
 
 ```
 v.3.1.6 - "schedule() - "
-v.6.0.2 - " "
+v.6.0.3 - " "
+```
+
+
+```
+import (
+	"time"
+)
+
+func main() {
+
+	//start := time.Now()
+
+	//end := time.Now()
+	//elapsed := end.Sub(start)
+	//fmt.Printf("Execution time: %s\n", elapsed)
+}
 ```
 
 </br></br>
@@ -194,8 +214,15 @@ v.6.0.2 - " "
 <summary>기타</summary>
 <div markdown="1">       
 
+- https://www.cs.princeton.edu/courses/archive/fall17/cos418/a1-2.html
 - https://www.cnblogs.com/lizhaolong/p/16437276.html
-- 
+- https://github.com/lovesh/COS-418
+- https://blog.51cto.com/u_15703183/5443253
+- https://github.com/webglider/mapreduce/blob/master/schedule.go
+- https://blog.csdn.net/freedom1523646952/article/details/108355990
+
+- (참고) https://blog.csdn.net/freedom1523646952/article/details/108355990
+- (참고) https://github.com/goldknife6/MIT-6.824-2016/blob/master/src/mapreduce/schedule.go
 
 </div>
 </details>
